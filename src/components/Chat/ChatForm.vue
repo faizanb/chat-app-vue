@@ -1,0 +1,36 @@
+<template>
+  <form class="my-5 flex justify-between w-full" @submit.prevent="sendMessage">
+    <div class="w-5/6">
+      <input
+        type="text"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder="Write a message"
+        v-model="data.message"
+        required
+      />
+    </div>
+    <button
+      type="submit"
+      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Send
+    </button>
+  </form>
+</template>
+
+<script setup>
+import { inject, reactive } from 'vue';
+const socket = inject('$socket');
+
+const data = reactive({
+  message: ''
+});
+
+const sendMessage = (e) => {
+  if (data.message.trim()) {
+    socket.emit('message', {
+      text: data.message
+    });
+  }
+};
+</script>

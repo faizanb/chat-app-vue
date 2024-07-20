@@ -13,11 +13,11 @@
   </button>
 </template>
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations } from 'vuex';
 export default {
   computed: {
     count() {
-      return this.$store.state.count
+      return this.$store.state.count;
     }
   },
   methods: {
@@ -25,7 +25,7 @@ export default {
       'increment' // map `this.increment()` to `this.$store.commit('increment')`
     ])
   }
-}
+};
 </script>
 
 <style>

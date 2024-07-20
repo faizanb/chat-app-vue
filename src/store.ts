@@ -1,8 +1,8 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
 
 // define your typings for the store state
 export interface State {
-  count: number
+  count: number;
 }
 
 export const store = createStore<State>({
@@ -12,7 +12,7 @@ export const store = createStore<State>({
   mutations: {
     increment(state) {
       // mutate state
-      state.count++
+      state.count++;
     }
   }
-})
+});
