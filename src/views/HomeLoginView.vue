@@ -12,7 +12,8 @@ const data = reactive({
 const loginToChatWindow = () => {
   if (data.userName && data.password && data.selectedRoom) {
     socket.emit('join_room', { ...data }, () => {
-      location.href = '/chat';
+      //@ts-ignore
+      location.href = `/chat?id=${data?.selectedRoom?.id}`;
     });
   }
 };
@@ -79,7 +80,7 @@ const loginToChatWindow = () => {
                   required
                 >
                   <option :value="null" disabled>Choose a Room</option>
-                  <option v-for="room in rooms" :value="room.name" :key="room.id">
+                  <option v-for="room in rooms" :value="room" :key="room.id">
                     {{ room.name }}
                   </option>
                 </select>
