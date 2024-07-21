@@ -1,3 +1,10 @@
+<script lang="ts">
+import ChatForm from '../components/Chat/ChatForm.vue';
+export default {
+  components: { ChatForm }
+};
+</script>
+
 <template>
   <div>
     <div class="flex items-start gap-2.5">
@@ -23,10 +30,3 @@
     <ChatForm></ChatForm>
   </div>
 </template>
-
-<script>
-import ChatForm from '../components/Chat/ChatForm.vue';
-export default {
-  components: { ChatForm }
-};
-</script>

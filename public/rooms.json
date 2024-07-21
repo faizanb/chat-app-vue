@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "General",
+    "description": "General Chat Room"
+  },
+  {
+    "id": 2,
+    "name": "Vue JS",
+    "description": "Vue JS Chat Room"
+  },
+  {
+    "id": 3,
+    "name": "React JS",
+    "description": "React JS Chat Room"
+  },
+  {
+    "id": 4,
+    "name": "Node JS",
+    "description": "Node JS Chat Room"
+  }
+]

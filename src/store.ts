@@ -11,7 +11,6 @@ export const store = createStore<State>({
   },
   mutations: {
     increment(state) {
-      // mutate state
       state.count++;
     }
   }

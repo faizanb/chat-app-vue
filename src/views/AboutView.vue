@@ -1,18 +1,4 @@
-<template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
-  <div>
-    <h1 class="text-3xl font-bold underline">Counter!</h1>
-  </div>
-  <button
-    class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded"
-    @click.prevent="increment"
-  >
-    {{ `Increment Counter - ${count}` }}
-  </button>
-</template>
-<script>
+<script lang="ts">
 import { mapMutations } from 'vuex';
 export default {
   computed: {
@@ -27,6 +13,21 @@ export default {
   }
 };
 </script>
+
+<template>
+  <div class="about">
+    <h1>This is an about page</h1>
+  </div>
+  <div>
+    <h1 class="text-3xl font-bold underline">Counter!</h1>
+  </div>
+  <button
+    class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2 px-4 rounded"
+    @click.prevent="increment"
+  >
+    {{ `Increment Counter - ${count}` }}
+  </button>
+</template>
 
 <style>
 @media (min-width: 1024px) {

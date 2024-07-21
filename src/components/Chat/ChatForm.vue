@@ -18,15 +18,15 @@
   </form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { inject, reactive } from 'vue';
-const socket = inject('$socket');
+const socket: any = inject('$socket');
 
 const data = reactive({
   message: ''
 });
 
-const sendMessage = (e) => {
+const sendMessage = () => {
   if (data.message.trim()) {
     socket.emit('message', {
       text: data.message

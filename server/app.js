@@ -24,6 +24,9 @@ io.on('connection', (socket) => {
   socket.on('message', (data) => {
     console.log(data);
   });
+  socket.on('join_room', (data) => {
+    console.log('room data..', data);
+  });
 });
 
 server.listen(PORT, () => {

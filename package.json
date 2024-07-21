@@ -14,7 +14,7 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "start": "nodemon server.js"
+    "start": "nodemon server/app.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
