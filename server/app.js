@@ -24,8 +24,9 @@ io.on('connection', (socket) => {
   socket.on('message', (data) => {
     console.log(data);
   });
-  socket.on('join_room', (data) => {
+  socket.on('join_room', (data, callback) => {
     console.log('room data..', data);
+    callback();
   });
 });
 

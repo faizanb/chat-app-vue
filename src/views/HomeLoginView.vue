@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Header from '../components/Header.vue';
 import { inject, reactive } from 'vue';
 const rooms: any = inject('$rooms');
 const socket: any = inject('$socket');
@@ -10,12 +11,15 @@ const data = reactive({
 
 const loginToChatWindow = () => {
   if (data.userName && data.password && data.selectedRoom) {
-    socket.emit('join_room', { ...data });
+    socket.emit('join_room', { ...data }, () => {
+      location.href = '/chat';
+    });
   }
 };
 </script>
 
 <template>
+  <Header></Header>
   <section class="bg-gray-50 dark:bg-gray-900">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <a
@@ -91,3 +95,18 @@ const loginToChatWindow = () => {
     </div>
   </section>
 </template>
+
+<style scoped>
+header {
+  line-height: 1.5;
+  max-height: 100vh;
+}
+
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+}
+</style>
