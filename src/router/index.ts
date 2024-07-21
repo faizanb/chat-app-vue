@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeLoginView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -7,12 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue')
+      component: import('../views/HomeLoginView.vue')
     },
     {
       path: '/chat',
