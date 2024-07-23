@@ -4,9 +4,13 @@ import http from 'http';
 import cors from 'cors';
 import { Server } from 'socket.io';
 
+import connectDB from './db.js';
+
 const PORT = process.env.PORT || 4000;
 const app = express();
 const server = http.createServer(app);
+
+connectDB();
 
 app.use(cors());
 
