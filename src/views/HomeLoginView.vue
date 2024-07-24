@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import Header from '../components/Header.vue';
 import { inject, reactive } from 'vue';
+//@ts-ignore
+import { useStore } from 'vuex';
+
+const store = useStore();
+
 const rooms: any = inject('$rooms');
 const socket: any = inject('$socket');
 const data = reactive({
@@ -11,10 +16,14 @@ const data = reactive({
 
 const loginToChatWindow = () => {
   if (data.userName && data.password && data.selectedRoom) {
-    socket.emit('join_room', { ...data }, () => {
-      //@ts-ignore
-      location.href = `/chat?id=${data?.selectedRoom?.id}`;
+    store.dispatch('loginUser', {
+      username: data.userName,
+      password: data.password
     });
+    // socket.emit('join_room', { ...data }, () => {
+    //   //@ts-ignore
+    //   location.href = `/chat?id=${data?.selectedRoom?.id}`;
+    // });
   }
 };
 </script>
