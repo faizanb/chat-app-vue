@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Header from '../components/Header.vue';
 import { inject, reactive } from 'vue';
-//@ts-ignore
 import { useStore } from 'vuex';
 
 const store = useStore();

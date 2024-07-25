@@ -1,8 +1,7 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
-import cookie from 'vue-cookies';
+import cookies from 'vue-cookies';
 
-// define your typings for the store state
 export interface State {
   count: number;
   token: any;
@@ -23,9 +22,9 @@ export const store = createStore<State>({
   },
   actions: {
     loginUser(context, payload) {
-      axios.post('http://localhost:4000/api/loginUser', payload).then((resp) => {
+      axios.post(`${import.meta.env.VITE_API_BASE_PATH}/loginUser`, payload).then((resp) => {
         //@ts-ignore
-        cookie.set('token', resp.data.token, { expires: '1d' });
+        cookies.set('token', resp.data.token, '1d');
         context.commit('LOGIN_USER', resp.data.token);
       });
     }

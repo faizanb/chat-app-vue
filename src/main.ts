@@ -6,7 +6,7 @@ import './assets/main.css';
 import { store } from './store';
 import App from './App.vue';
 import router from './router';
-import roomData from '../public/rooms.json';
+import roomData from './data/rooms.json';
 
 //@ts-ignore
 const socket = socketIO.connect('http://localhost:4000');
@@ -14,6 +14,7 @@ const app = createApp(App);
 
 app.use(router);
 app.use(store);
+
 app.provide('$socket', socket);
 app.provide('$rooms', roomData);
 
