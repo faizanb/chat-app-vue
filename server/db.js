@@ -5,10 +5,7 @@ const connectDB = () => {
     'mongodb+srv://faizanb:faiza%40mongo123%23@cluster0.eiooso1.mongodb.net/chat_app_users';
 
   try {
-    mongoose.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    mongoose.connect(url);
   } catch (err) {
     console.error(err.message);
     process.exit(1);

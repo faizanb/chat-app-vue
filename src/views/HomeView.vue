@@ -1,23 +1,56 @@
 <script setup lang="ts">
-import Header from '../components/Header.vue';
-import { inject, reactive } from 'vue';
+import Header from '../components/Home/Header.vue';
+import axios from 'axios';
+import { inject, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
 
 const rooms: any = inject('$rooms');
 const socket: any = inject('$socket');
-const data = reactive({
-  userName: null,
-  password: null,
-  selectedRoom: null
+
+const userName = computed({
+  get() {
+    return store.state.userName;
+  },
+  set(value) {
+    store.dispatch('setUserName', value);
+  }
+});
+
+const password = computed({
+  get() {
+    return store.state.password;
+  },
+  set(value) {
+    store.dispatch('setPassword', value);
+  }
+});
+
+const selectedRoom = computed({
+  get() {
+    return store.state.selectedRoom;
+  },
+  set(value) {
+    store.dispatch('setSelectedRoom', value);
+  }
+});
+
+onBeforeMount(async () => {
+  if (store.state.token) {
+    const userResp: any = await axios.get(`${import.meta.env.VITE_API_BASE_PATH}/getUserDetails`, {
+      headers: { Authorization: `${store.state.token}` }
+    });
+    const { data } = await userResp;
+    store.dispatch('setUserName', data.user);
+  }
 });
 
 const loginToChatWindow = () => {
-  if (data.userName && data.password && data.selectedRoom) {
+  if (store.state.userName && store.state.password && store.state.selectedRoom) {
     store.dispatch('loginUser', {
-      username: data.userName,
-      password: data.password
+      username: store.state.userName,
+      password: store.state.password
     });
     // socket.emit('join_room', { ...data }, () => {
     //   //@ts-ignore
@@ -37,13 +70,17 @@ const loginToChatWindow = () => {
           class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
           <img class="w-8 h-8 mr-2" src="@/assets/chat.png" alt="logo" />
-          Login to Chat Room
+          {{ `${store.state.token === null ? `Login` : `Go`} to Chat Room` }}
         </a>
         <div
           class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
         >
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <form class="space-y-4 md:space-y-6" @submit.prevent="loginToChatWindow">
+            <form
+              v-if="store.state.token === null"
+              class="space-y-4 md:space-y-6"
+              @submit.prevent="loginToChatWindow"
+            >
               <div>
                 <label
                   for="user-name"
@@ -55,7 +92,7 @@ const loginToChatWindow = () => {
                   id="user-name"
                   class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-emerald-400 dark:focus:border-emerald-400"
                   placeholder="Enter Username"
-                  v-model="data.userName"
+                  v-model="userName"
                   required
                 />
               </div>
@@ -71,7 +108,7 @@ const loginToChatWindow = () => {
                   id="password"
                   placeholder="••••••••"
                   class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-emerald-400 dark:focus:border-emerald-400"
-                  v-model="data.password"
+                  v-model="password"
                   required
                 />
               </div>
@@ -84,7 +121,7 @@ const loginToChatWindow = () => {
                 <select
                   id="large"
                   class="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-emerald-400 focus:border-emerald-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-emerald-400 dark:focus:border-emerald-400"
-                  v-model="data.selectedRoom"
+                  v-model="selectedRoom"
                   required
                 >
                   <option :value="null" disabled>Choose a Room</option>
@@ -98,6 +135,39 @@ const loginToChatWindow = () => {
                 class="w-full text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:focus:ring-emerald-700"
               >
                 Sign in
+              </button>
+            </form>
+            <form v-else class="space-y-4 md:space-y-6" @submit.prevent="loginToChatWindow">
+              <div>
+                <label
+                  for="user-name"
+                  class="block mb-2 text-lg font-bold text-gray-900 dark:text-white"
+                  >{{ `Welcome back ${userName ?? ''}!` }}</label
+                >
+              </div>
+              <div>
+                <label
+                  for="large"
+                  class="block mb-2 text-base font-medium text-gray-900 dark:text-white"
+                  >Select Room to Enter</label
+                >
+                <select
+                  id="large"
+                  class="block w-full px-4 py-3 text-base text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-emerald-400 focus:border-emerald-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-emerald-400 dark:focus:border-emerald-400"
+                  v-model="selectedRoom"
+                  required
+                >
+                  <option :value="null" disabled>Choose a Room</option>
+                  <option v-for="room in rooms" :value="room" :key="room.id">
+                    {{ room.name }}
+                  </option>
+                </select>
+              </div>
+              <button
+                type="submit"
+                class="w-full text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:focus:ring-emerald-700"
+              >
+                Enter Chat
               </button>
             </form>
           </div>

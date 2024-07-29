@@ -9,7 +9,7 @@ import router from './router';
 import roomData from './data/rooms.json';
 
 //@ts-ignore
-const socket = socketIO.connect('http://localhost:4000');
+const socket = socketIO.connect(import.meta.env.VITE_SERVER_URL);
 const app = createApp(App);
 
 app.use(router);

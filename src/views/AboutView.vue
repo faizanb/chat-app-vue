@@ -7,9 +7,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([
-      'increment' // map `this.increment()` to `this.$store.commit('increment')`
-    ])
+    ...mapMutations({
+      increment: 'INCREMENT' // map `this.increment()` to `this.$store.commit('increment')`
+    })
   }
 };
 </script>

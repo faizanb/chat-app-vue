@@ -8,17 +8,43 @@ const saltRounds = 10;
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = new UserModel({ username, password: hashedPassword });
-    await user.save();
+    let user;
+    let isExistingUser = false;
 
-    const accessToken = jwt.sign(JSON.stringify(user), process.env.TOKEN_SECRET);
+    user = await UserModel.findOne({ username: username });
+    if (user) {
+      const isPassComparedRes = await bcrypt.compare(password, user.password);
+      if (isPassComparedRes) {
+        isExistingUser = true;
+      } else {
+        return res.json({
+          error: true,
+          message: 'User not found!'
+        });
+      }
+    } else {
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      user = new UserModel({ username, password: hashedPassword });
+      await user.save();
+    }
 
-    res.json({
+    const accessToken = await jwt.sign(JSON.stringify(username), process.env.TOKEN_SECRET);
+
+    return res.json({
       user: username,
-      token: accessToken
+      token: accessToken,
+      isExistingUser
     });
   } catch (e) {}
 };
 
-export { loginUser };
+const getUserDetails = async (req, res) => {
+  try {
+    const decodedUser = await jwt.verify(req.headers.authorization, process.env.TOKEN_SECRET);
+    return res.json({
+      user: JSON.parse(decodedUser)
+    });
+  } catch (e) {}
+};
+
+export { loginUser, getUserDetails };
