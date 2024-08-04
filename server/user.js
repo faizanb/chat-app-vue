@@ -7,11 +7,11 @@ const saltRounds = 10;
 
 const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { userName, password } = req.body;
     let user;
     let isExistingUser = false;
 
-    user = await UserModel.findOne({ username: username });
+    user = await UserModel.findOne({ username: userName });
     if (user) {
       const isPassComparedRes = await bcrypt.compare(password, user.password);
       if (isPassComparedRes) {
@@ -24,14 +24,13 @@ const loginUser = async (req, res) => {
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, saltRounds);
-      user = new UserModel({ username, password: hashedPassword });
+      user = new UserModel({ username: userName, password: hashedPassword });
       await user.save();
     }
 
-    const accessToken = await jwt.sign(JSON.stringify(username), process.env.TOKEN_SECRET);
-
+    const accessToken = await jwt.sign(JSON.stringify(userName), process.env.TOKEN_SECRET);
     return res.json({
-      user: username,
+      user: userName,
       token: accessToken,
       isExistingUser
     });

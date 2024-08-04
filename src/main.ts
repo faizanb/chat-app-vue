@@ -12,10 +12,10 @@ import roomData from './data/rooms.json';
 const socket = socketIO.connect(import.meta.env.VITE_SERVER_URL);
 const app = createApp(App);
 
-app.use(router);
-app.use(store);
-
 app.provide('$socket', socket);
 app.provide('$rooms', roomData);
+
+app.use(router);
+app.use(store);
 
 app.mount('#app');

@@ -47,15 +47,19 @@ onBeforeMount(async () => {
 });
 
 const loginToChatWindow = () => {
-  if (store.state.userName && store.state.password && store.state.selectedRoom) {
-    store.dispatch('loginUser', {
-      username: store.state.userName,
-      password: store.state.password
-    });
-    // socket.emit('join_room', { ...data }, () => {
-    //   //@ts-ignore
-    //   location.href = `/chat?id=${data?.selectedRoom?.id}`;
-    // });
+  let { userName, password, selectedRoom } = store.state;
+  if (userName && password && selectedRoom) {
+    store
+      .dispatch('loginUser', {
+        userName,
+        password,
+        selectedRoom
+      })
+      .then(() => {
+        socket.emit('join_room', { user: userName, room: selectedRoom }, () => {
+          location.href = `/chat?id=${selectedRoom?.id}`;
+        });
+      });
   }
 };
 </script>
