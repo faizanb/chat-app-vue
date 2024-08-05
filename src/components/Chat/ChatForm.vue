@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { inject, reactive, onBeforeUnmount } from 'vue';
+import { useStore } from 'vuex';
+
+const socket: any = inject('$socket');
+const store = useStore();
+
+const data = reactive({
+  message: ''
+});
+
+onBeforeUnmount(() => {
+  socket.off('notification');
+});
+
+const sendMessage = () => {
+  if (data.message.trim()) {
+    const __createdtime__ = Date.now();
+    socket.emit('send_message', {
+      message: data.message,
+      user: store.state.userName,
+      room: store.state.selectedRoom,
+      __createdtime__
+    });
+  }
+  data.message = '';
+};
+</script>
+
 <template>
   <div class="fixed bottom-0 px-4 w-full sm:w-10/12">
     <form class="my-5 flex justify-between w-full" @submit.prevent="sendMessage">
@@ -19,20 +48,3 @@
     </form>
   </div>
 </template>
-
-<script setup lang="ts">
-import { inject, reactive } from 'vue';
-const socket: any = inject('$socket');
-
-const data = reactive({
-  message: ''
-});
-
-const sendMessage = () => {
-  if (data.message.trim()) {
-    socket.emit('message', {
-      text: data.message
-    });
-  }
-};
-</script>

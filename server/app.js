@@ -31,12 +31,23 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('A user disconnected');
   });
-  socket.on('message', (data) => {
-    console.log(data);
-  });
+
   socket.on('join_room', (data, callback) => {
-    console.log('room data..', data);
+    const room = data.room.name;
+
+    let __createdtime__ = Date.now();
+    socket.join(room);
+    socket.to(room).emit('notification', {
+      message: `${data.user} has joined the chat room`,
+      __createdtime__
+    });
     callback();
+  });
+
+  socket.on('send_message', (data) => {
+    const { message, user, room, __createdtime__ } = data;
+    io.to(room.name).emit('receive_message', data);
+    //Persist messages in DB for each room - Add code here
   });
 });
 

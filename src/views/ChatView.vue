@@ -1,8 +1,30 @@
-<script lang="ts">
+<script setup lang="ts">
+import { inject, reactive, onMounted } from 'vue';
 import ChatForm from '../components/Chat/ChatForm.vue';
-export default {
-  components: { ChatForm }
-};
+
+const socket: any = inject('$socket');
+const data: any = reactive({
+  messages: []
+});
+
+onMounted(() => {
+  socket.on('notification', (resp: any) => {
+    data.messages.push({
+      isNotification: true,
+      message: resp.message,
+      user: 'chat_bot',
+      __createdtime__: resp.__createdtime__
+    });
+  });
+  socket.on('receive_message', (resp: any) => {
+    data.messages.push({
+      isNotification: false,
+      message: resp.message,
+      user: resp.user,
+      __createdtime__: resp.__createdtime__
+    });
+  });
+});
 </script>
 
 <template>
@@ -37,23 +59,25 @@ export default {
   </aside>
 
   <div class="pt-20 sm:ml-[16.666667%] h-full w-10/12">
-    <div class="flex items-start gap-2.5 px-4">
-      <!-- <img
-          class="w-8 h-8 rounded-full"
-          src="/docs/images/people/profile-picture-3.jpg"
-          alt="Jese image"
-        /> -->
-      <div class="flex flex-col gap-1 w-full max-w-[320px]">
-        <div class="flex items-center space-x-2 rtl:space-x-reverse">
-          <span class="text-sm font-semibold text-gray-900 dark:text-white">Bonnie Green</span>
-          <span class="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
-        </div>
-        <div
-          class="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
-        >
-          <p class="text-sm font-normal text-gray-900 dark:text-white">
-            That's awesome. I think our users will really appreciate the improvements.
-          </p>
+    <div v-for="(messageObj, index) in data.messages" :key="index">
+      <div v-if="messageObj.isNotification" class="flex justify-center pb-3 text-sm">
+        {{ messageObj.message }}
+      </div>
+      <div v-else class="flex items-start gap-2.5 px-4 pb-2">
+        <div class="flex flex-col gap-1 w-full max-w-[320px]">
+          <div class="flex items-center space-x-2 rtl:space-x-reverse">
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">{{
+              messageObj.user
+            }}</span>
+            <span class="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
+          </div>
+          <div
+            class="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
+          >
+            <p class="text-sm font-normal text-gray-900 dark:text-white">
+              {{ messageObj.message }}
+            </p>
+          </div>
         </div>
       </div>
     </div>

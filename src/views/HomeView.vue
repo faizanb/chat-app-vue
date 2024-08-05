@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Header from '../components/Home/Header.vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 import { inject, onBeforeMount, computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
+const router = useRouter();
 
 const rooms: any = inject('$rooms');
 const socket: any = inject('$socket');
@@ -56,11 +58,16 @@ const loginToChatWindow = () => {
         selectedRoom
       })
       .then(() => {
-        socket.emit('join_room', { user: userName, room: selectedRoom }, () => {
-          location.href = `/chat?id=${selectedRoom?.id}`;
-        });
+        enterChatRoom();
       });
   }
+};
+
+const enterChatRoom = () => {
+  let { userName, selectedRoom } = store.state;
+  socket.emit('join_room', { user: userName, room: selectedRoom }, () => {
+    router.push(`/chat?id=${selectedRoom?.id}`);
+  });
 };
 </script>
 
@@ -170,6 +177,7 @@ const loginToChatWindow = () => {
               <button
                 type="submit"
                 class="w-full text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:focus:ring-emerald-700"
+                @click.prevent="enterChatRoom"
               >
                 Enter Chat
               </button>
