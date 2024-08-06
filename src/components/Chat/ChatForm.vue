@@ -28,9 +28,9 @@ const sendMessage = () => {
 </script>
 
 <template>
-  <div class="bg-white fixed bottom-0 px-4 w-full sm:w-10/12">
-    <form class="my-5 flex justify-between w-full" @submit.prevent="sendMessage">
-      <div class="w-full">
+  <div class="bg-white fixed bottom-0 px-4 w-full sm:w-[90%]">
+    <form class="my-5 flex justify-between w-full sm:w-[90%]" @submit.prevent="sendMessage">
+      <div class="w-full sm:w-[90%]">
         <input
           type="text"
           class="w-[95%] sm:w-[99%] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-emerald-700 dark:focus:border-emerald-700"
