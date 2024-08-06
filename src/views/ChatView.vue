@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, reactive, onMounted } from 'vue';
+import { inject, reactive, onMounted, onUpdated } from 'vue';
 import { useStore } from 'vuex';
 import ChatForm from '../components/Chat/ChatForm.vue';
 
@@ -7,6 +7,12 @@ const socket: any = inject('$socket');
 const store = useStore();
 const data: any = reactive({
   messages: []
+});
+
+onUpdated(() => {
+  let scrollableDiv: any = document.getElementById('chat-window');
+  //top padding and bottom margin offset added - 80 + 80 - 160px
+  window.scrollTo({ top: scrollableDiv.scrollHeight + 80 + 80, left: 0, behavior: 'smooth' });
 });
 
 onMounted(() => {
@@ -61,43 +67,45 @@ onMounted(() => {
   </aside>
 
   <div class="pt-20 sm:ml-[16.666667%] h-full">
-    <div v-for="(messageObj, index) in data.messages" :key="index">
-      <div v-if="messageObj.isNotification" class="flex justify-center pb-3 text-sm">
-        {{ messageObj.message }}
-      </div>
-      <div v-else>
-        <div
-          v-if="messageObj.user !== store.state.userName"
-          class="flex items-start gap-2.5 px-4 pb-2"
-        >
-          <div class="flex flex-col gap-1 w-fit-content max-w-[320px]">
-            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-              <span class="text-sm font-semibold text-gray-900 dark:text-white">{{
-                messageObj.user
-              }}</span>
-              <span class="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
-            </div>
-            <div
-              class="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
-            >
-              <p class="text-sm font-normal text-gray-900 dark:text-white">
-                {{ messageObj.message }}
-              </p>
+    <div id="chat-window" class="mb-20">
+      <div v-for="(messageObj, index) in data.messages" :key="index">
+        <div v-if="messageObj.isNotification" class="flex justify-center pb-3 text-sm">
+          {{ messageObj.message }}
+        </div>
+        <div v-else>
+          <div
+            v-if="messageObj.user !== store.state.userName"
+            class="flex items-start gap-2.5 px-4 pb-2"
+          >
+            <div class="flex flex-col gap-1 w-fit-content max-w-[320px]">
+              <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{
+                  messageObj.user
+                }}</span>
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
+              </div>
+              <div
+                class="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
+              >
+                <p class="text-sm font-normal text-gray-900 dark:text-white">
+                  {{ messageObj.message }}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-else class="flex items-start justify-end gap-2.5 px-4 pb-2">
-          <div class="flex flex-col gap-1 w-fit-content max-w-[320px]">
-            <div class="flex items-center justify-end space-x-2 rtl:space-x-reverse">
-              <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ `You` }}</span>
-              <span class="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
-            </div>
-            <div
-              class="flex flex-col leading-1.5 p-4 border-emerald-500 bg-emerald-500 rounded-s-xl rounded-ee-xl dark:bg-emerald-500"
-            >
-              <p class="text-sm font-normal text-white">
-                {{ messageObj.message }}
-              </p>
+          <div v-else class="flex items-start justify-end gap-2.5 px-4 pb-2">
+            <div class="flex flex-col gap-1 w-fit-content max-w-[320px]">
+              <div class="flex items-center justify-end space-x-2 rtl:space-x-reverse">
+                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ `You` }}</span>
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">11:46</span>
+              </div>
+              <div
+                class="flex flex-col leading-1.5 p-4 border-emerald-500 bg-emerald-500 rounded-s-xl rounded-ee-xl dark:bg-emerald-500"
+              >
+                <p class="text-sm font-normal text-white">
+                  {{ messageObj.message }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
