@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, reactive, onMounted, onUpdated } from 'vue';
+import { inject, onMounted, onUpdated, toRaw } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { useStore } from 'vuex';
 import ChatForm from '../components/Chat/ChatForm.vue';
@@ -7,9 +7,8 @@ import { dateTimeConvertor } from '../utils/date.utils';
 
 const socket: any = inject('$socket');
 const store = useStore();
-const data: any = reactive({
-  messages: []
-});
+
+const { messages, onlineUsers, selectedRoom } = store.state;
 
 onUpdated(() => {
   let scrollableDiv: any = document.getElementById('chat-window');
@@ -19,8 +18,16 @@ onUpdated(() => {
 
 onMounted(() => {
   initFlowbite();
+  socket.on('users', (resp: any) => {
+    store.dispatch('updateOnlineUsers', {
+      usersList: resp.users,
+      isExiting: resp.isExiting,
+      exitingUser: resp.isExiting ? resp.exitingUser : null,
+      currentUser: store.state.userName
+    });
+  });
   socket.on('notification', (resp: any) => {
-    data.messages.push({
+    store.dispatch('setMessages', {
       isNotification: true,
       message: resp.message,
       user: 'chat_bot',
@@ -28,7 +35,7 @@ onMounted(() => {
     });
   });
   socket.on('receive_message', (resp: any) => {
-    data.messages.push({
+    store.dispatch('setMessages', {
       isNotification: false,
       message: resp.message,
       user: resp.user,
@@ -36,6 +43,13 @@ onMounted(() => {
     });
   });
 });
+
+const leaveRoom = () => {
+  let { userName, selectedRoom } = store.state;
+  socket.emit('leave_room', { user: userName, room: selectedRoom }, () => {
+    location.href = '/';
+  });
+};
 </script>
 
 <template>
@@ -82,20 +96,37 @@ onMounted(() => {
     class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
     aria-label="Sidebar"
   >
-    <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-      <ul class="space-y-2 font-medium">
-        <li class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group">
-          <span class="ms-3">Dashboard</span>
+    <div class="h-full px-3 pb-4 mb-5 overflow-y-auto bg-white dark:bg-gray-800">
+      <span class="ms-3 font-bold tex-lg py-2">{{ selectedRoom?.name }}</span>
+      <ul class="font-medium mt-2">
+        <li
+          v-for="(user, index) in onlineUsers"
+          :key="index"
+          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group"
+        >
+          <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3">
+            <span class="flex w-2.5 h-2.5 bg-green-500 rounded-full me-1.5 flex-shrink-0"></span
+            >{{ index === 0 ? `${user} (You)` : user }}</span
+          >
         </li>
       </ul>
+      <button
+        type="button"
+        class="fixed bottom-0 text-gray-900 bg-gray-100 border border-gray-300 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-3 mb-5 text-center inline-flex items-center dark:focus:ring-gray-500 dark:border-gray-600 me-2 mb-2"
+        @click.prevent="leaveRoom"
+      >
+        Leave Room
+      </button>
     </div>
   </aside>
 
   <div class="pt-20 sm:ml-64 h-full">
     <div id="chat-window" class="mb-20">
-      <div v-for="(messageObj, index) in data.messages" :key="index">
-        <div v-if="messageObj.isNotification" class="flex justify-center pb-3 text-sm">
-          {{ messageObj.message }}
+      <div v-for="(messageObj, index) in messages" :key="index">
+        <div v-if="messageObj.isNotification" class="text-center px-4 py-3 text-sm">
+          {{
+            `${messageObj.message} at ${dateTimeConvertor(messageObj.__createdtime__, true, true)}`
+          }}
         </div>
         <div v-else>
           <div

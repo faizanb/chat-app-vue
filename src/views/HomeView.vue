@@ -2,7 +2,7 @@
 import Header from '../components/Home/Header.vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import { inject, onBeforeMount, computed } from 'vue';
+import { inject, onBeforeMount, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
@@ -48,6 +48,17 @@ onBeforeMount(async () => {
   }
 });
 
+onMounted(() => {
+  socket.on('users', (resp: any) => {
+    store.dispatch('updateOnlineUsers', {
+      usersList: resp.users,
+      isExiting: resp.isExiting,
+      exitingUser: resp.isExiting ? resp.exitingUser : null,
+      currentUser: store.state.userName
+    });
+  });
+});
+
 const loginToChatWindow = () => {
   let { userName, password, selectedRoom } = store.state;
   if (userName && password && selectedRoom) {
@@ -66,6 +77,7 @@ const loginToChatWindow = () => {
 const enterChatRoom = () => {
   let { userName, selectedRoom } = store.state;
   socket.emit('join_room', { user: userName, room: selectedRoom }, () => {
+    socket.off('users');
     router.push(`/chat?id=${selectedRoom?.id}`);
   });
 };

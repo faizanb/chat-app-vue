@@ -6,7 +6,13 @@ import cors from 'cors';
 import { Server } from 'socket.io';
 
 import connectDB from './db.js';
-import { loginUser, getUserDetails } from './user.js';
+import {
+  loginUser,
+  getUserDetails,
+  addOnlineUser,
+  removeOnlineUser,
+  getOnlineUsers
+} from './user.js';
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -35,12 +41,23 @@ io.on('connection', (socket) => {
   socket.on('join_room', (data, callback) => {
     const room = data.room.name;
 
-    let __createdtime__ = Date.now();
     socket.join(room);
+
+    addOnlineUser({
+      user: data.user,
+      room: data.room.name,
+      room_id: data.room.id
+    });
+
+    let __createdtime__ = Date.now();
+
     socket.to(room).emit('notification', {
       message: `${data.user} has joined the chat room`,
       __createdtime__
     });
+
+    io.to(room).emit('users', { users: getOnlineUsers(room), isExiting: false });
+
     callback();
   });
 
@@ -48,6 +65,31 @@ io.on('connection', (socket) => {
     const { message, user, room, __createdtime__ } = data;
     io.to(room.name).emit('receive_message', data);
     //Persist messages in DB for each room - Add code here
+  });
+
+  socket.on('leave_room', (data, callback) => {
+    const room = data.room.name;
+
+    removeOnlineUser({
+      user: data.user,
+      room: data.room.name,
+      room_id: data.room.id
+    });
+
+    let __createdtime__ = Date.now();
+
+    socket.to(room).emit('notification', {
+      message: `${data.user} has left the chat room`,
+      __createdtime__
+    });
+
+    io.to(room).emit('users', {
+      users: getOnlineUsers(room),
+      isExiting: true,
+      exitingUser: data.user
+    });
+
+    callback();
   });
 });
 

@@ -4,10 +4,11 @@ import jwt from 'jsonwebtoken';
 import UserModel from './models/User.js';
 
 const saltRounds = 10;
+const onlineUsers = [];
 
 const loginUser = async (req, res) => {
   try {
-    const { userName, password } = req.body;
+    const { userName, password, selectedRoom } = req.body;
     let user;
     let isExistingUser = false;
 
@@ -29,6 +30,7 @@ const loginUser = async (req, res) => {
     }
 
     const accessToken = await jwt.sign(JSON.stringify(userName), process.env.TOKEN_SECRET);
+
     return res.json({
       user: userName,
       token: accessToken,
@@ -40,10 +42,40 @@ const loginUser = async (req, res) => {
 const getUserDetails = async (req, res) => {
   try {
     const decodedUser = await jwt.verify(req.headers.authorization, process.env.TOKEN_SECRET);
+    const userParsed = JSON.parse(decodedUser);
     return res.json({
-      user: JSON.parse(decodedUser)
+      user: userParsed
     });
   } catch (e) {}
 };
 
-export { loginUser, getUserDetails };
+const addOnlineUser = (data) => {
+  let userFiltered = onlineUsers.filter(
+    (user) => user.name === data.user && user.room === data.room
+  );
+
+  if (userFiltered.length <= 0) {
+    onlineUsers.push({
+      name: data.user,
+      room: data.room,
+      room_id: data.room_id
+    });
+  }
+  return;
+};
+
+const removeOnlineUser = (data) => {
+  let userIndex = onlineUsers.findIndex(
+    (user) => user.name === data.user && user.room === data.room
+  );
+
+  if (userIndex !== -1) {
+    onlineUsers.splice(userIndex, 1);
+  }
+};
+
+const getOnlineUsers = (room) => {
+  return onlineUsers.filter((user) => user.room === room);
+};
+
+export { loginUser, getUserDetails, addOnlineUser, removeOnlineUser, getOnlineUsers };

@@ -1,4 +1,8 @@
-const dateTimeConvertor = (timeStamp: Date) => {
+const dateTimeConvertor = (
+  timeStamp: Date,
+  isTimeFirst: boolean = false,
+  showAbsoluteDate: boolean = false
+) => {
   let date = new Date(timeStamp);
   let today = new Date();
 
@@ -22,7 +26,14 @@ const dateTimeConvertor = (timeStamp: Date) => {
   timeSplit.pop();
   let finalTmString = `${timeSplit.join(':')} ${timeString[1]}`;
 
-  return `${dateString}, ${finalTmString}`;
+  if (isTimeFirst) {
+    if (showAbsoluteDate) {
+      return `${finalTmString}, ${date.toDateString()}`;
+    }
+    return `${finalTmString}, ${dateString}`;
+  } else {
+    return `${dateString}, ${finalTmString}`;
+  }
 };
 
 export { dateTimeConvertor };

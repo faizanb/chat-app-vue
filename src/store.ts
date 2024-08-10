@@ -6,9 +6,10 @@ export interface State {
   userName: string | null;
   password: string | null;
   selectedRoom: string | null;
-  count: number;
   formClicked: boolean;
   token: any;
+  messages: any[];
+  onlineUsers: any[];
 }
 
 export const store = createStore<State>({
@@ -16,29 +17,48 @@ export const store = createStore<State>({
     userName: null,
     password: null,
     selectedRoom: null,
-    count: 0,
     formClicked: false,
     //@ts-ignore
-    token: cookies.get('token') || null
+    token: cookies.get('token') || null,
+    messages: [],
+    onlineUsers: []
   },
   mutations: {
-    INCREMENT: (state) => {
-      state.count++;
-    },
     FORM_CLICKED: (state) => {
       state.formClicked = !state.formClicked;
     },
-    LOGIN_USER: (state, data) => {
-      state.token = data;
+    LOGIN_USER: (state, token) => {
+      state.token = token;
     },
-    SET_USERNAME: (state, data) => {
-      state.userName = data;
+    SET_USERNAME: (state, name) => {
+      state.userName = name;
     },
-    SET_PASSWORD: (state, data) => {
-      state.password = data;
+    SET_PASSWORD: (state, password) => {
+      state.password = password;
     },
-    SET_ROOM: (state, data) => {
-      state.selectedRoom = data;
+    SET_ROOM: (state, room) => {
+      state.selectedRoom = room;
+    },
+    UPDATE_MESSAGES: (state, message) => {
+      state.messages.push({ ...message });
+    },
+    UPDATE_USERS: (state, data) => {
+      if (!data.isExiting) {
+        data.usersList.forEach((user: any) => {
+          if (!state.onlineUsers.includes(user.name)) {
+            if (user.name === data.currentUser) {
+              state.onlineUsers.unshift(user.name);
+            } else {
+              state.onlineUsers.push(user.name);
+            }
+          }
+        });
+      } else {
+        let userIndex = state.onlineUsers.indexOf(data.exitingUser);
+        if (userIndex !== -1) {
+          state.onlineUsers.splice(userIndex, 1);
+        }
+      }
     }
   },
   actions: {
@@ -61,6 +81,12 @@ export const store = createStore<State>({
     },
     setSelectedRoom(context, room) {
       context.commit('SET_ROOM', room);
+    },
+    setMessages(context, message) {
+      context.commit('UPDATE_MESSAGES', message);
+    },
+    updateOnlineUsers(context, data) {
+      context.commit('UPDATE_USERS', data);
     }
   }
 });
