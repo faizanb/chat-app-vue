@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, onMounted, onUpdated, toRaw } from 'vue';
+import { inject, onMounted, onUpdated } from 'vue';
 import { initFlowbite } from 'flowbite';
 import { useStore } from 'vuex';
 import ChatForm from '../components/Chat/ChatForm.vue';
