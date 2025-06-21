@@ -1,61 +1,93 @@
-# chat-app-vue
+# Chat App Vue
 
-This template should help get you started developing with Vue 3 in Vite.
+A real-time chat application built with Vue.js.
 
-## Recommended IDE Setup
+## Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Real-time messaging
+- User authentication
+- Responsive UI
+- Group and private chats
 
-## Type Support for `.vue` Imports in TS
+## Tech Stack
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- [Vue.js](https://vuejs.org/)
+- [Vue Router](https://router.vuejs.org/)
+- [Vuex](https://vuex.vuejs.org/) (if used)
+- [Socket.io](https://socket.io/) (for real-time communication)
+- Backend: Node.js/Express (if applicable)
 
-## Customize configuration
+## Getting Started
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+### Prerequisites
 
-## Project Setup
+- Node.js (v14+ recommended)
+- npm or yarn
 
-```sh
+### Installation
+
+```bash
+git clone https://github.com/yourusername/chat-app-vue.git
+cd chat-app-vue
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Project Structure
 
-```sh
+```
+chat-app-vue/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── views/
+│   ├── router/
+│   ├── store/
+│   └── App.vue
+├── package.json
+└── README.md
+```
+
+## Technologies Used
+
+- Vue 3
+- Vuex
+- Vue Router
+- Tailwind CSS
+- Flowbite
+- Socket.IO
+- Express
+- MongoDB + Mongoose
+- Cypress
+- Vitest
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and fill in the required values::
+
+```
+PORT=4000
+TOKEN_SECRET=your_key
+VITE_SERVER_URL=http://localhost:4000
+VITE_API_BASE_PATH=http://localhost:4000/api
+```
+
+- Update the MongoDB connection string in `server/db.js` if needed.
+
+### Running the Frontend
+
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+The app will be available at `http://localhost:5173`.
 
-```sh
-npm run build
+### Running the Backend
+
+```bash
+npm run start
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+## License
 
-```sh
-npm run test:unit
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+[MIT](LICENSE)
