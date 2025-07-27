@@ -49,7 +49,7 @@ onMounted(() => {
 const leaveRoom = () => {
   let { userName, selectedRoom } = store.state;
   socket.emit('leave_room', { user: userName, room: selectedRoom }, () => {
-    location.href = '/';
+    location.href = '/chatify/';
   });
 };
 </script>
