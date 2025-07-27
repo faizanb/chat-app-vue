@@ -9,7 +9,9 @@ import router from './router';
 import roomData from './data/rooms.json';
 
 //@ts-ignore
-const socket = socketIO.connect(import.meta.env.VITE_SERVER_URL);
+const socket = socketIO.connect(import.meta.env.VITE_SERVER_URL, {
+  path: '/chat/socket.io'
+});
 const app = createApp(App);
 
 app.provide('$socket', socket);

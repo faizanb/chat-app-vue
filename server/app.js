@@ -30,7 +30,8 @@ app.get('/api/getUserDetails', getUserDetails);
 const io = new Server(server, {
   cors: {
     origin: '*'
-  }
+  },
+  path: '/chat/socket.io'
 });
 
 io.on('connection', (socket) => {
