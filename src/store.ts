@@ -65,7 +65,7 @@ export const store = createStore<State>({
     loginUser(context, payload) {
       return new Promise((resolve, reject) => {
         context.commit('FORM_CLICKED');
-        axios.post(`${import.meta.env.VITE_API_BASE_PATH}loginUser`, payload).then((resp) => {
+        axios.post(`${import.meta.env.VITE_API_BASE_PATH}/loginUser`, payload).then((resp) => {
           //@ts-ignore
           cookies.set('token', resp.data.token, '1d');
           context.commit('LOGIN_USER', resp.data.token);

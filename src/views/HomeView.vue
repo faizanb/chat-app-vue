@@ -42,7 +42,7 @@ const selectedRoom = computed({
 
 onBeforeMount(async () => {
   if (store.state.token) {
-    const userResp: any = await axios.get(`${import.meta.env.VITE_API_BASE_PATH}getUserDetails`, {
+    const userResp: any = await axios.get(`${import.meta.env.VITE_API_BASE_PATH}/getUserDetails`, {
       headers: { Authorization: `${store.state.token}` }
     });
     const { data } = await userResp;
