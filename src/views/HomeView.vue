@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import { inject, onBeforeMount, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const store = useStore();
 const router = useRouter();
 
@@ -92,7 +94,7 @@ const enterChatRoom = () => {
           href="#"
           class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
-          <img class="w-8 h-8 mr-2" src="@/assets/chat.png" alt="logo" />
+          <img class="w-8 h-8 mr-2" :src="`${baseUrl}chat.png`" alt="logo" />
           {{ `${store.state.token === null ? `Login` : `Go`} to Chat Room` }}
         </a>
         <div

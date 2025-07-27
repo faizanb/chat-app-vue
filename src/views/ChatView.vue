@@ -5,6 +5,8 @@ import { useStore } from 'vuex';
 import ChatForm from '../components/Chat/ChatForm.vue';
 import { dateTimeConvertor } from '../utils/date.utils';
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const socket: any = inject('$socket');
 const store = useStore();
 
@@ -81,7 +83,7 @@ const leaveRoom = () => {
               ></path>
             </svg>
           </button>
-          <img src="@/assets/chat.png" class="h-8 me-3" alt="Chat Logo" />
+          <img :src="`${baseUrl}chat.png`" class="h-8 me-3" alt="Chat Logo" />
           <span
             class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"
             >Chat Application</span

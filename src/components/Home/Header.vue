@@ -1,7 +1,11 @@
+<script setup lang="ts">
+const baseUrl = import.meta.env.BASE_URL;
+</script>
+
 <template>
   <header>
     <div class="flex justify-center items-center lg:justify-start lg:items-start">
-      <img alt="Chat logo" class="w-1/6 lg:w-5/6" src="@/assets/chat.png" />
+      <img alt="Chat logo" class="w-1/6 lg:w-5/6" :src="`${baseUrl}chat.png`" />
     </div>
     <div>
       <h1
