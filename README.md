@@ -66,10 +66,11 @@ chat-app-vue/
 Copy `.env.example` to `.env` and fill in the required values::
 
 ```
-PORT=4000
+PORT=4010
 TOKEN_SECRET=your_key
-VITE_SERVER_URL=http://localhost:4000
-VITE_API_BASE_PATH=http://localhost:4000/api
+VITE_SERVER_URL=http://localhost:4010
+VITE_API_BASE_PATH=http://localhost:4010/api
+MONGO_URL=mongodb://localhost:27017/mydatabase
 ```
 
 - Update the MongoDB connection string in `server/db.js` if needed.

@@ -14,7 +14,7 @@ import {
   getOnlineUsers
 } from './user.js';
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4010;
 const app = express();
 const server = http.createServer(app);
 
@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join_room', (data, callback) => {
+    console.log(`User ${data.user} joined room: ${data.room.name}`);
     const room = data.room.name;
 
     socket.join(room);
