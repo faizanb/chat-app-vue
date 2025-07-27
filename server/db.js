@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 
 const connectDB = () => {
-  const url =
-    'mongodb+srv://faizanb:faiza%40mongo123%23@cluster0.eiooso1.mongodb.net/chat_app_users';
+  const url = process.env.MONGO_URL;
 
   try {
     mongoose.connect(url);
