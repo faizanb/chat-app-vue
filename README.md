@@ -78,10 +78,11 @@ MONGO_URL=mongodb://localhost:27017/mydatabase
 ### Running the Frontend
 
 ```bash
-npm run dev
+npm run build
+npm run preview
 ```
 
-The app will be available at `http://localhost:5173`.
+The app will be available at `http://localhost:4173/chatify/`.
 
 ### Running the Backend
 
